@@ -15,10 +15,15 @@ const LinkResult = ({ inputValue }) => {
             try {
                 setLoading(true);
                 const res = await axios(`https://api.shrtco.de/v2/shorten?url=${inputValue}`);
-                setShortenLink(res.data.result.full_short_link);
-            } catch (err) {
+                if(res)
+                    setShortenLink(res.data.result.full_short_link);
+            } 
+            catch (err) {
+                // setShortenLink("");
                 setError(err);
-            } finally {
+                setTimeout(()=>{setError(false)},3000)
+            } 
+            finally {
                 setLoading(false);
             }
         }
@@ -45,14 +50,11 @@ const LinkResult = ({ inputValue }) => {
 
 
     return (
-        <>
+        <> {/* if shortenlink has value then only render the div "result" other wise return error msg so used &&*/}
             {shortenLink && (
                 <div className="result">
                     <p>{shortenLink}</p>
-                    <CopyToClipboard
-                        text={shortenLink}
-                        onCopy={() => setCopied(true)}
-                    >
+                    <CopyToClipboard text={shortenLink} onCopy={() => setCopied(true)} >
                         <button className={copied ? "copied" : ""}>Copy to Clipboard</button>
                     </CopyToClipboard>
                 </div>
